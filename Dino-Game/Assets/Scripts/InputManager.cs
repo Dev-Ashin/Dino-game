@@ -16,7 +16,6 @@ public class InputManager : MonoBehaviour
         playerInput = new PlayerInput();
         playerInput.Enable();
         playerInput.Player.Jump.performed += Jump_performed;
-        
 
     }
 

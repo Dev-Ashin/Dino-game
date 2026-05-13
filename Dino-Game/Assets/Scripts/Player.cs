@@ -1,27 +1,46 @@
+using System;
 using UnityEngine;
 
 public class Player : MonoBehaviour
 {
+    public static Player Instance { get; private set; }
+
+    public event EventHandler OnJump;
     [SerializeField] private Rigidbody2D rb;
     [SerializeField] private float jumpHeight;
+
+    [SerializeField] private AudioSource audioSource;
+    [SerializeField] private AudioClip clip;
 
     private bool isGrounded;
 
 
     private void Awake()
     {
+        Instance = this;
         rb = GetComponent<Rigidbody2D>();
     }
     private void Start()
     {
-        InputManager.Instance.OnJump += InputManager_OnJump;
+        if (InputManager.Instance)
+        {
+            InputManager.Instance.OnJump += InputManager_OnJump;
+        }
+        else
+        {
+            Debug.LogWarning("NO input manager");
+        }
     }
 
     private void InputManager_OnJump(object sender, System.EventArgs e)
     {
         if (isGrounded)
         {
+            OnJump?.Invoke(this, EventArgs.Empty);
             Jump();
+            Debug.Log("On jump walk through");
+            SoundManager.Instance.PlaySoundEffectsClip(clip, transform, 1);
+
         }
        
     }

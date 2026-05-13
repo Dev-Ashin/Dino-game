@@ -26,4 +26,9 @@ public class Spike : MonoBehaviour
     {
         transform.position += Vector3.left * moveSpeed * Time.deltaTime;
     }
+
+    public void DestroySelf()
+    {
+        Destroy(gameObject);
+    }
 }

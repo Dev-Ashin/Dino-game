@@ -6,6 +6,8 @@ public class SpikeSpawner : MonoBehaviour
     [SerializeField] private float spikeTimerMax;
     [SerializeField] private GameObject spike;
     [SerializeField] private float moveSpeed;
+    [SerializeField] private Vector3 movePosLeftMax;
+    [SerializeField] private Vector3 movePosRightMax;
     private float spikeTimer;
 
 
@@ -34,12 +36,18 @@ public class SpikeSpawner : MonoBehaviour
     }
 
     private void Spawn()
+
     {
-       GameObject spikeObj = Instantiate(spike, transform.position, Quaternion.identity);
+        Vector3 rand = Vector3.zero;
+        rand.x = Random.Range(movePosLeftMax.x, movePosRightMax.x);
+        rand.y = gameObject.transform.position.y;
+
+       GameObject spikeObj = Instantiate(spike, rand, Quaternion.identity);
        Spike spikeScript = spikeObj.GetComponent<Spike>();
         if (spikeScript)
         {
            spikeScript.IncreaseSpeed(moveSpeed);
+           
         }
         
     }
