@@ -6,11 +6,16 @@ public class Player : MonoBehaviour
     public static Player Instance { get; private set; }
 
     public event EventHandler OnJump;
+    public event EventHandler OnHit;
+    public event EventHandler OnDeath;
+
+    [SerializeField] private int life;
     [SerializeField] private Rigidbody2D rb;
     [SerializeField] private float jumpHeight;
 
     [SerializeField] private AudioSource audioSource;
-    [SerializeField] private AudioClip clip;
+    [SerializeField] private AudioClip jumpClip;
+    [SerializeField] private AudioClip hitClip;
 
     private bool isGrounded;
 
@@ -32,6 +37,14 @@ public class Player : MonoBehaviour
         }
     }
 
+    private void Update()
+    {
+        if(life <= 0)
+        {
+            Die();
+        }
+    }
+
     private void InputManager_OnJump(object sender, System.EventArgs e)
     {
         if (isGrounded)
@@ -39,7 +52,7 @@ public class Player : MonoBehaviour
             OnJump?.Invoke(this, EventArgs.Empty);
             Jump();
             Debug.Log("On jump walk through");
-            SoundManager.Instance.PlaySoundEffectsClip(clip, transform, 1);
+            SoundManager.Instance.PlaySoundEffectsClip(jumpClip, transform, 1);
 
         }
        
@@ -60,7 +73,7 @@ public class Player : MonoBehaviour
 
         if (collision.gameObject.GetComponent<Spike>())
         {
-            Debug.Log("GameOver");
+            Hit();
         }
     }
     private void OnCollisionExit2D(Collision2D collision)
@@ -69,5 +82,23 @@ public class Player : MonoBehaviour
         {
             isGrounded = false;
         }
+    }
+
+    private void Hit()
+    {
+        OnHit?.Invoke(this, EventArgs.Empty);
+        SoundManager.Instance.PlaySoundEffectsClip(hitClip, transform, 1);
+        life--;
+    }
+
+    private void Die()
+    {
+        OnDeath?.Invoke(this, EventArgs.Empty);
+        Debug.Log("GameOver");
+        DestroySelf();
+    }
+    private void DestroySelf()
+    {
+        Destroy(gameObject);
     }
 }

@@ -1,19 +1,46 @@
+using System;
 using UnityEngine;
 
 public class ScoreManager : MonoBehaviour
 {
+    public static ScoreManager Instance { get; private set; }
+
+    public event EventHandler OnScoreChanged;
+
     [SerializeField] private int score;
 
-
+    private GameManager gameManager;
+    private void Awake()
+    {
+        Instance = this;
+    }
+    private void Start()
+    {
+        gameManager = GameManager.Instance;
+    }
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        if (collision.gameObject.GetComponent<Spike>())
+        if (gameManager.GetState() == GameManager.GameState.Playing)
         {
-            
-            Spike spike = collision.gameObject.GetComponent<Spike>();
-            score++;
-            spike.DestroySelf();
-            Debug.Log(score);
+            if (collision.gameObject.GetComponent<Spike>())
+            {
+
+                Spike spike = collision.gameObject.GetComponent<Spike>();
+                IncreaseScore();
+                spike.DestroySelf();
+                Debug.Log(score);
+            }
         }
+    }
+
+    private void IncreaseScore()
+    {
+        score++;
+        OnScoreChanged?.Invoke(this, EventArgs.Empty);
+    }
+
+    public int GetScore()
+    {
+       return  score;
     }
 }
