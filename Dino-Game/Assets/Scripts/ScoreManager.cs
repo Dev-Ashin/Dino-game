@@ -1,4 +1,5 @@
 using System;
+using TMPro;
 using UnityEngine;
 
 public class ScoreManager : MonoBehaviour
@@ -8,6 +9,8 @@ public class ScoreManager : MonoBehaviour
     public event EventHandler OnScoreChanged;
 
     [SerializeField] private int score;
+
+    [SerializeField] private HighScoreSO highScoreSO;
 
     private GameManager gameManager;
     private void Awake()
@@ -37,8 +40,22 @@ public class ScoreManager : MonoBehaviour
     {
         score++;
         OnScoreChanged?.Invoke(this, EventArgs.Empty);
+        if (score > highScoreSO.highScore)
+        {
+            IncreaseHighScore();
+        }
+       
     }
 
+    private void IncreaseHighScore()
+    {
+        highScoreSO.highScore++;
+    }
+
+    public int GetHighScore()
+    {
+        return highScoreSO.highScore;
+    }
     public int GetScore()
     {
        return  score;

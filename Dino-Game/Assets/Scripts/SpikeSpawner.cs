@@ -25,7 +25,10 @@ public class SpikeSpawner : MonoBehaviour
         if(spikeTimer <= 0)
         {
             spikeTimer = spikeTimerMax;
-            Spawn();
+            if (GameManager.Instance.GetState() == GameManager.GameState.Playing)
+            {
+                Spawn();
+            }
         }
         if(difficultyTimer <= 0)
         {
